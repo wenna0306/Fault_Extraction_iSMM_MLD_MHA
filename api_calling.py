@@ -154,7 +154,8 @@ df_all = df_all.replace({np.nan: None})
 data_dic = df_all.to_dict(orient="records")
 
 # Upsert data into Supabase table
-supabase.table("Fault_MHA").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+supabase.table("fault_MHA").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+
 
 
 
