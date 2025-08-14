@@ -6,6 +6,7 @@ import os
 import pytz
 from dotenv import load_dotenv
 from supabase import create_client
+import time
 
 
 load_dotenv(dotenv_path="api_key.env")
@@ -154,6 +155,7 @@ data_dic = df_all.to_dict(orient="records")
 
 # Upsert data into Supabase table
 supabase.table("Fault_MHA").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+
 
 
 
