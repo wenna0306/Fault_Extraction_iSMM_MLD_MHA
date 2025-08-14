@@ -17,7 +17,7 @@ password = os.getenv("password")
 sg_timezone = pytz.timezone('Asia/Singapore')
 # Calculate date range
 today = datetime.date.today()  # Get today's date
-start_date = today - datetime.timedelta(days=90)  # 3 months before today
+start_date = today - datetime.timedelta(days=3)  # 3 months before today
 
 # Format dates as YYYY-MM-DD
 end_date_str = today.strftime("%Y-%m-%d")
@@ -40,15 +40,19 @@ def get_access_token(email, password):
 access_token = get_access_token(email, password)
 
 # Function to fetch paginated fault data within the date range
+# # Status filters
+# statuses = "work_completed"
+
+# Pagination variables
+per_page = 10  # Adjust based on API limits
+total_pages = 5000  # Define how many pages you want to fetch (e.g., 5 pages)
+
+site_list = [90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 
+             115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 
+             138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 
+             161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 190]   # 94sites, need to be string
+
 def fetch_faults(access_token):
-
-    # # Status filters
-    # statuses = "work_completed"
-
-    # Pagination variables
-    per_page = 10  # Adjust based on API limits
-    total_pages = 5000  # Define how many pages you want to fetch (e.g., 5 pages)
-
     all_data = []  # List to collect all the fault data
 
     # Loop through pages and fetch data
@@ -82,76 +86,17 @@ def fetch_faults(access_token):
     return all_data # Return the collected data
 
 
-site_name = 194
-all_data = fetch_faults(access_token)
-df_194= pd.DataFrame(all_data)
+# Step 2: Fetch fault data within the date range and status filters
 
-site_name = 201
-all_data = fetch_faults(access_token)
-df_201= pd.DataFrame(all_data)
+fault_holder = []
+for site_name in site_list:
+    fault_data = fetch_faults(access_token, start_date_str, end_date_str, statuses, site_name)  # Get the fault data
+    df = pd.DataFrame(fault_data)
+    fault_holder.append(df)
+    time.sleep(8)
 
-site_name = 202
-all_data = fetch_faults(access_token)
-df_202= pd.DataFrame(all_data)
 
-site_name = 203
-all_data = fetch_faults(access_token)
-df_203= pd.DataFrame(all_data)
-
-site_name = 204
-all_data = fetch_faults(access_token)
-df_204= pd.DataFrame(all_data)
-
-site_name = 205
-all_data = fetch_faults(access_token)
-df_205= pd.DataFrame(all_data)
-
-site_name = 206
-all_data = fetch_faults(access_token)
-df_206= pd.DataFrame(all_data)
-
-site_name = 207
-all_data = fetch_faults(access_token)
-df_207= pd.DataFrame(all_data)
-
-site_name = 208
-all_data = fetch_faults(access_token)
-df_208= pd.DataFrame(all_data)
-
-site_name = 209
-all_data = fetch_faults(access_token)
-df_209= pd.DataFrame(all_data)
-
-site_name = 210
-all_data = fetch_faults(access_token)
-df_210= pd.DataFrame(all_data)
-
-site_name = 211
-all_data = fetch_faults(access_token)
-df_211= pd.DataFrame(all_data)
-
-site_name = 212
-all_data = fetch_faults(access_token)
-df_212 = pd.DataFrame(all_data)
-
-site_name = 213
-all_data = fetch_faults(access_token)
-df_213= pd.DataFrame(all_data)
-
-site_name = 214
-all_data = fetch_faults(access_token)
-df_214= pd.DataFrame(all_data)
-
-site_name = 215
-all_data = fetch_faults(access_token)
-df_215= pd.DataFrame(all_data)
-
-site_name = 216
-all_data = fetch_faults(access_token)
-df_216= pd.DataFrame(all_data)
-
-df_list = [df_194, df_201, df_202, df_203, df_204, df_205, df_206, df_207, df_208, df_209, df_210, df_211, df_212, df_213, df_214, df_215, df_216]
-df = pd.concat(df_list)
+df = pd.concat(fault_holder, ignore_index=True)
 
 df = df.loc[:, ['fault_number', 'site_fault_number', 
        'trade_name', 'category_name', 'type_name', 'other_type', 'impact_name', 'site_and_location', 'created_user',
@@ -207,4 +152,5 @@ df_all = df_all.replace({np.nan: None})
 data_dic = df_all.to_dict(orient="records")
 
 # Upsert data into Supabase table
-supabase.table("Fault_LTA_Building").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+supabase.table("Fault_MHA").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+
