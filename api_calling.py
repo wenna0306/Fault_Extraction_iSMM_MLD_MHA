@@ -95,7 +95,7 @@ for site_name in site_list:
     fault_data = fetch_faults(access_token, start_date_str, end_date_str, statuses, site_name)  # Get the fault data
     df = pd.DataFrame(fault_data)
     fault_holder.append(df)
-    time.sleep(8)
+    time.sleep(5)
 
 
 df = pd.concat(fault_holder, ignore_index=True)
@@ -155,6 +155,7 @@ data_dic = df_all.to_dict(orient="records")
 
 # Upsert data into Supabase table
 supabase.table("fault_MHA").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+
 
 
 
