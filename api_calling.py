@@ -42,6 +42,7 @@ access_token = get_access_token(email, password)
 # Function to fetch paginated fault data within the date range
 # # Status filters
 # statuses = "work_completed"
+statuses = []
 
 # Pagination variables
 per_page = 10  # Adjust based on API limits
@@ -153,4 +154,5 @@ data_dic = df_all.to_dict(orient="records")
 
 # Upsert data into Supabase table
 supabase.table("Fault_MHA").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+
 
