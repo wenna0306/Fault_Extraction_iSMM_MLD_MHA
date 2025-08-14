@@ -18,7 +18,7 @@ password = os.getenv("password")
 sg_timezone = pytz.timezone('Asia/Singapore')
 # Calculate date range
 today = datetime.date.today()  # Get today's date
-start_date = today - datetime.timedelta(days=3)  # 3 months before today
+start_date = today - datetime.timedelta(days=90)  # 3 months before today
 
 # Format dates as YYYY-MM-DD
 end_date_str = today.strftime("%Y-%m-%d")
@@ -155,6 +155,7 @@ data_dic = df_all.to_dict(orient="records")
 
 # Upsert data into Supabase table
 supabase.table("fault_MHA").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+
 
 
 
