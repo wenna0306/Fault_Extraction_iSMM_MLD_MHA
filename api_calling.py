@@ -53,7 +53,7 @@ site_list = [90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 10
              138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 
              161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 190]   # 94sites, need to be string
 
-def fetch_faults(access_token):
+def fetch_faults(access_token, start_date_str, end_date_str, statuses, site_name):
     all_data = []  # List to collect all the fault data
 
     # Loop through pages and fetch data
@@ -154,5 +154,6 @@ data_dic = df_all.to_dict(orient="records")
 
 # Upsert data into Supabase table
 supabase.table("Fault_MHA").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+
 
 
