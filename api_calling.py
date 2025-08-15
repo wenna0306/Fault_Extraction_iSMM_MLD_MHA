@@ -128,6 +128,7 @@ df_loc = df_loc.set_index(df["site_and_location"].index)
 # Merge with original DataFrame
 df_all = pd.concat([df, df_loc], axis=1)
 df_all = df_all.drop(["site_and_location"], axis=1)
+df_all = df_all.dropna(axis=0, subset='Fault Number')
 
 df_all.columns = ['Fault Number', 'Site Fault Number', 'Trade', 'Trade Category',
        'Type of Fault', 'other_type', 'Impact', 'Reported By',
@@ -159,6 +160,7 @@ data_dic = df_all.to_dict(orient="records")
 
 # Upsert data into Supabase table
 supabase.table("fault_MHA").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+
 
 
 
