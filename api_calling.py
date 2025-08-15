@@ -23,10 +23,10 @@ start_date = today - datetime.timedelta(days=90)  # 3 months before today
 # Format dates as YYYY-MM-DD
 # end_date_str = today.strftime("%Y-%m-%d")
 # start_date_str = start_date.strftime("%Y-%m-%d")
---------------------------------------------------------------
+# --------------------------------------------------------------
 end_date_str = '2025-03-31'
 start_date_str = '2025-01-01'
--------------------------------------------------------------
+# -------------------------------------------------------------
 
 def get_access_token(email, password):
     url = "https://ismm-midland.sg/app/api/auth/login"
@@ -159,6 +159,7 @@ data_dic = df_all.to_dict(orient="records")
 
 # Upsert data into Supabase table
 supabase.table("fault_MHA").upsert(data_dic, on_conflict=["Fault Number"]).execute() 
+
 
 
 
